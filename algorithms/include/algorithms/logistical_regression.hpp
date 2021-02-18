@@ -28,9 +28,21 @@ protected:
 
     // Coefficients calculated with dataset given for pre-training
     std::vector<double> m_theta;
+    double m_theta_free_member;
 
-    static double sigmoid(double x);
+    static double sigmoid(double arg);
+    static double dot(const std::vector<double>& x, const std::vector<double>& y);
 
+    double cost(size_t i) const;
+    double gradient(size_t i) const;
+
+    /**
+     * Finds minimal value of ... with BFGS algorithm
+     * 
+     * @param i Index of dataset entry
+     */
+    double minimal(size_t i) const;
+    
     void train();
 
 public:
