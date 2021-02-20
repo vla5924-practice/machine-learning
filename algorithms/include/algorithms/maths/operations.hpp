@@ -9,14 +9,55 @@ namespace Maths
 {
 
 template<typename T>
+Vector<T> operator*(const T& x, const Vector<T>& y)
+{
+    Vector<T> result(y.size());
+    for (auto& elem : result)
+        elem = x * elem;
+    return result;
+}
+
+template<typename T>
+Matrix<T> operator*(const T& x, const Matrix<T>& y)
+{
+    size_t rows = y.size();
+    size_t cols = y.front().size();
+    Matrix<T> result = createMatrix<T>(rows, cols);
+    for (auto& row : result)
+        for (auto& elem : row)
+            elem = x * elem;
+    return result;
+}
+
+template<typename T>
+Vector<T> operator+(const Vector<T>& x, const Vector<T>& y)
+{
+    size_t size = x.size();
+    Vector<T> result(size);
+    for (size_t i = 0; i < size; i++)
+        result[i] = x[i] + y[i];
+    return result;
+}
+
+template<typename T>
+Vector<T> operator-(const Vector<T>& x, const Vector<T>& y)
+{
+    size_t size = x.size();
+    Vector<T> result(size);
+    for (size_t i = 0; i < size; i++)
+        result[i] = x[i] - y[i];
+    return result;
+}
+
+template<typename T>
 Matrix<T> operator*(const Vector<T>& x, const Vector<T>& y)
 {
     size_t rows = x.size();
     size_t cols = y.size();
-    Matrix<T> result = createZeros(rows, cols);
+    Matrix<T> result = createMatrix<T>(rows, cols);
     for (size_t i = 0; i < cols; i++)
         for (size_t j = 0; j < rows; j++)
-            result[i] = x[i] * y[j];
+            result[i][j] = x[i] * y[j];
     return result;
 }
 
@@ -33,14 +74,33 @@ Vector<T> operator*(const Matrix<T>& x, const Vector<T>& y)
 }
 
 template<typename T>
-Vector<T> operator*(const Vector<T>& x, const Matrix<T>& y)
+Matrix<T> operator*(const Vector<T>& x, const Matrix<T>& y)
 {
     size_t rows = y.size();
-    size_t cols = y.front().size();
-    Vector<T> result(cols, T{});
-    for (size_t i = 0; i < cols; i++)
-        for (size_t j = 0; j < rows; j++)
-            result[i] += x[j] * y[j][i]; // TODO: double check this
+    size_t cols = x.size();
+    Matrix<T> result = createMatrix<T>(rows, cols);
+    for (size_t i = 0; i < rows; i++)
+        for (size_t j = 0; j < cols; j++)
+            result[i][j] += x[j] * y[i][j];
+    return result;
+}
+
+template<typename T>
+Matrix<T> operator-(const Matrix<T>& x)
+{
+    Matrix<T> result = x;
+    for (auto& row : result)
+        for (auto& elem : row)
+            elem = -elem;
+    return result;
+}
+
+template<typename T>
+Vector<T> operator-(const Vector<T>& x)
+{
+    Vector<T> result = x;
+    for (auto& elem : result)
+        elem = -elem;
     return result;
 }
 
