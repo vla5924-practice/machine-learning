@@ -28,13 +28,13 @@ protected:
 
     // Coefficients calculated with dataset given for pre-training
     std::vector<double> m_theta;
-    double m_theta_free_member;
+    double m_theta_0;
 
     static double sigmoid(double arg);
     static double dot(const std::vector<double>& x, const std::vector<double>& y);
+    std::vector<double> gradient(size_t i, const std::vector<double>& x) const;
 
     double cost(size_t i) const;
-    double gradient(size_t i) const;
 
     /**
      * Finds minimal value of ... with BFGS algorithm
