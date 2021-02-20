@@ -69,9 +69,8 @@ double LogisticalRegression::minimal(size_t i) const
         Vector<double> grad_next = gradient(i, x_next);
         Vector<double> grad_delta = grad_next - grad;
         double ro = 1 / dot(grad_delta, x_delta);
-        Vector<std::vector<double>> h_next(m_feature_count);
         Matrix<double> temp = h - ro * (x_delta * (grad_delta * h));
-        h_next = (temp - ro * (temp * grad_delta) * x_delta) + (ro * x_delta * x_delta);
+        Matrix<double> h_next = (temp - ro * (temp * grad_delta) * x_delta) + (ro * x_delta * x_delta);
         x = x_next;
         grad = grad_next;
         h = h_next;
