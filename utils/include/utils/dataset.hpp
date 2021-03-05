@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <type_traits>
 
 #include <rapidcsv.h>
 
@@ -38,7 +39,10 @@ public:
             std::vector<T> part(cols - 1);
             for (size_t j = 0; j < cols - 1; j++)
                 part[j] = doc.GetCell<T>(j, i);
-            data.emplace_back(part, doc.GetCell<Tx>(cols - 1, i));
+            if (std::is_same<Tx, bool>::value)
+                data.emplace_back(part, doc.GetCell<int>(cols - 1, i));
+            else
+                data.emplace_back(part, doc.GetCell<Tx>(cols - 1, i));
         }
         return data;
     }
