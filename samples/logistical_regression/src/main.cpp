@@ -15,5 +15,14 @@ int main(int argc, char* argv[])
     std::string filename = argv[1];
     Utils::Dataset dataset(filename);
     auto data = dataset.asPairsWithVector<double, bool>();
-    Algorithms::LogisticalRegression algo(data);
+
+    Algorithms::LogisticalRegression log_reg(data);
+    while (true)
+    {
+        std::cout << "Enter input features (" << log_reg.featureCount() << "): ";
+        std::vector<double> inputs(log_reg.featureCount());
+        for (size_t i = 0; i < log_reg.featureCount(); i++)
+            std::cin >> inputs[i];
+        std::cout << "Classification result (OR): " << log_reg.classify(inputs) << std::endl;
+    }
 }
