@@ -11,7 +11,7 @@ namespace Maths
 template<typename T>
 Vector<T> operator*(const T& x, const Vector<T>& y)
 {
-    Vector<T> result(y.size());
+    Vector<T> result = y;
     for (auto& elem : result)
         elem = x * elem;
     return result;
