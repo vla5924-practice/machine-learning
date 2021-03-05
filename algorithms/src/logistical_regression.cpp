@@ -43,30 +43,30 @@ std::vector<double> LogisticalRegression::gradient(size_t i) const
 }
 */
 
-std::vector<double> LogisticalRegression::gradient(size_t i, const std::vector<double>& x) const
+std::vector<double> LogisticalRegression::gradient(const std::vector<double>& x) const
 {
     assert(x.size() == m_feature_count);
     std::vector<double> grad(m_feature_count);
     double arg = m_theta_0 + dot(m_theta, x);
-    for (size_t j = 0; j < m_feature_count; j++)
-        grad[j] = -(x[j] * std::exp(arg)) * sigmoid(arg);
+    for (size_t i = 0; i < m_feature_count; i++)
+        grad[i] = -(x[i] * std::exp(arg)) * sigmoid(arg);
     return grad;
 }
 
-double LogisticalRegression::minimal(size_t i) const
+std::vector<double> LogisticalRegression::minimal(size_t i) const
 {
     Matrix<double> h = createIdentity<double>(m_feature_count);
-    double epsilon = 1e-3;
+    double epsilon = 1e-5;
     Vector<double> x = m_dataset[i].first;
-    Vector<double> grad = gradient(i, x);
+    Vector<double> grad = gradient(x);
     do
     {
         Vector<double> p = -h * grad;
-        double alpha = 0;
+        double alpha = 1;
         // TODO: Search alpha to satisfy to Wolfe condition
         Vector<double> x_next = x + alpha * p;
         Vector<double> x_delta = x_next - x;
-        Vector<double> grad_next = gradient(i, x_next);
+        Vector<double> grad_next = gradient(x_next);
         Vector<double> grad_delta = grad_next - grad;
         double ro = 1 / dot(grad_delta, x_delta);
         Matrix<double> temp = h - ro * (x_delta * (grad_delta * h));
@@ -75,13 +75,23 @@ double LogisticalRegression::minimal(size_t i) const
         grad = grad_next;
         h = h_next;
     } while(norm(grad) > epsilon);
-    // TODO: Define return value
-    return 0;
+    return x;
 }
 
 void LogisticalRegression::train()
 {
-
+    m_theta_0 = 0;
+    m_theta.resize(m_feature_count, 0);
+    std::vector<double> features(m_feature_count, 0);
+    for (size_t i = 0; i < m_feature_count; i++)
+        features = features + m_dataset[i].first;
+    for (size_t i = 0; i < m_feature_count; i++)
+        features[i] /= m_feature_count;
+    std::vector<double> thetas(m_feature_count, 0);
+    for (size_t i = 0; i < m_feature_count; i++)
+        thetas = thetas + minimal(i);
+    for (size_t i = 0; i < m_feature_count; i++)
+        m_theta[i] = thetas[i] / m_feature_count;
 }
 
 LogisticalRegression::LogisticalRegression(const std::vector<Pair>& dataset) {
@@ -94,14 +104,22 @@ LogisticalRegression::LogisticalRegression(const std::vector<Pair>& dataset) {
             throw std::runtime_error("Dataset entries have different sizes");
 
     m_dataset = dataset;
+    m_theta_0 = 0;
     train();
 }
+
+
+size_t LogisticalRegression::featureCount() const
+{
+    return m_feature_count;
+}
+
 
 double LogisticalRegression::classify(const std::vector<double>& inputs)
 {
     if (inputs.size() != m_feature_count)
         throw std::runtime_error("Input does not have the same size as dataset");
 
-    double arg = dot(m_theta, inputs) + m_theta_0;
+    double arg = m_theta_0 + dot(m_theta, inputs);
     return sigmoid(arg);
 }

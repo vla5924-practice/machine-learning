@@ -31,8 +31,7 @@ protected:
     double m_theta_0;
 
     static double sigmoid(double arg);
-    static double dot(const std::vector<double>& x, const std::vector<double>& y);
-    std::vector<double> gradient(size_t i, const std::vector<double>& x) const;
+    std::vector<double> gradient(const std::vector<double>& x) const;
 
     double cost(size_t i) const;
 
@@ -41,7 +40,7 @@ protected:
      * 
      * @param i Index of dataset entry
      */
-    double minimal(size_t i) const;
+    std::vector<double> minimal(size_t i) const;
     
     void train();
 
@@ -49,6 +48,7 @@ public:
     LogisticalRegression(const std::vector<Pair>& dataset);
     ~LogisticalRegression() = default;
 
+    size_t featureCount() const;
     double classify(const std::vector<double>& inputs);
 };
 
