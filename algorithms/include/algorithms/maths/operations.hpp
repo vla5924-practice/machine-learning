@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tuple>
+
 #include "maths/functions.hpp"
 #include "maths/types.hpp"
 
@@ -20,9 +22,7 @@ Vector<T> operator*(const T& x, const Vector<T>& y)
 template<typename T>
 Matrix<T> operator*(const T& x, const Matrix<T>& y)
 {
-    size_t rows = y.size();
-    size_t cols = y.front().size();
-    Matrix<T> result = createMatrix<T>(rows, cols);
+    Matrix<T> result = y;
     for (auto& row : result)
         for (auto& elem : row)
             elem = x * elem;
@@ -32,7 +32,9 @@ Matrix<T> operator*(const T& x, const Matrix<T>& y)
 template<typename T>
 Vector<T> operator+(const Vector<T>& x, const Vector<T>& y)
 {
+    assert(x.size() == y.size());
     size_t size = x.size();
+
     Vector<T> result(size);
     for (size_t i = 0; i < size; i++)
         result[i] = x[i] + y[i];
@@ -42,7 +44,9 @@ Vector<T> operator+(const Vector<T>& x, const Vector<T>& y)
 template<typename T>
 Vector<T> operator-(const Vector<T>& x, const Vector<T>& y)
 {
+    assert(x.size() == y.size());
     size_t size = x.size();
+
     Vector<T> result(size);
     for (size_t i = 0; i < size; i++)
         result[i] = x[i] - y[i];
@@ -54,9 +58,10 @@ Matrix<T> operator*(const Vector<T>& x, const Vector<T>& y)
 {
     size_t rows = x.size();
     size_t cols = y.size();
+
     Matrix<T> result = createMatrix<T>(rows, cols);
-    for (size_t i = 0; i < cols; i++)
-        for (size_t j = 0; j < rows; j++)
+    for (size_t i = 0; i < rows; i++)
+        for (size_t j = 0; j < cols; j++)
             result[i][j] = x[i] * y[j];
     return result;
 }
@@ -64,8 +69,10 @@ Matrix<T> operator*(const Vector<T>& x, const Vector<T>& y)
 template<typename T>
 Vector<T> operator*(const Matrix<T>& x, const Vector<T>& y)
 {
-    size_t rows = x.size();
-    size_t cols = x.front().size();
+    size_t rows, cols;
+    std::tie(rows, cols) = ndims(x);
+    assert(cols == y.size());
+
     Vector<T> result(rows, T{});
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
@@ -74,14 +81,15 @@ Vector<T> operator*(const Matrix<T>& x, const Vector<T>& y)
 }
 
 template<typename T>
-Matrix<T> operator*(const Vector<T>& x, const Matrix<T>& y)
+Vector<T> operator*(const Vector<T>& x, const Matrix<T>& y)
 {
-    size_t rows = y.size();
-    size_t cols = x.size();
-    Matrix<T> result = createMatrix<T>(rows, cols);
-    for (size_t i = 0; i < rows; i++)
-        for (size_t j = 0; j < cols; j++)
-            result[i][j] += x[j] * y[i][j];
+    size_t rows, cols;
+    std::tie(rows, cols) = ndims(y);
+
+    Vector<T> result(cols, T{});
+    for (size_t i = 0; i < cols; i++)
+        for (size_t j = 0; j < rows; j++)
+            result[i] += x[j] * y[j][i];
     return result;
 }
 
