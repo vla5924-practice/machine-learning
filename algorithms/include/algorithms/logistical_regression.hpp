@@ -31,12 +31,13 @@ protected:
     double m_theta_0;
 
     static double sigmoid(double arg);
+
     std::vector<double> gradient(const std::vector<double>& x) const;
 
     double cost(size_t i) const;
 
     /**
-     * Finds minimal value of ... with BFGS algorithm
+     * Finds minimal value of dataset-based cost function with BFGS algorithm
      * 
      * @param i Index of dataset entry
      */
@@ -49,7 +50,10 @@ public:
     ~LogisticalRegression() = default;
 
     size_t featureCount() const;
+
+    std::pair<std::vector<double>, double> dividingHyperplane() const;
+
     double classify(const std::vector<double>& inputs);
 };
 
-}
+} // namespace Algorithms

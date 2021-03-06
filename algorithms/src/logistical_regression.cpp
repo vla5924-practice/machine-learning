@@ -29,20 +29,6 @@ double LogisticalRegression::cost(size_t i) const
     return sum;
 }
 
-/*
-std::vector<double> LogisticalRegression::gradient(size_t i) const
-{
-    std::vector<double> grad(m_feature_count);
-    const std::vector<double>& params = m_dataset[i].first;
-    double arg = m_theta_0;
-    for (size_t j = 0; j < m_feature_count; j++)
-        arg += m_theta[j] * params[j];
-    for (size_t j = 0; j < m_feature_count; j++)
-        grad[j] = -(params[j] * std::exp(arg)) * sigmoid(arg);
-    return grad;
-}
-*/
-
 std::vector<double> LogisticalRegression::gradient(const std::vector<double>& x) const
 {
     assert(x.size() == m_feature_count);
@@ -108,12 +94,15 @@ LogisticalRegression::LogisticalRegression(const std::vector<Pair>& dataset) {
     train();
 }
 
-
 size_t LogisticalRegression::featureCount() const
 {
     return m_feature_count;
 }
 
+std::pair<std::vector<double>, double> LogisticalRegression::dividingHyperplane() const
+{
+    return std::make_pair(m_theta, m_theta_0);
+}
 
 double LogisticalRegression::classify(const std::vector<double>& inputs)
 {
