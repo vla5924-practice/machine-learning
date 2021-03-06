@@ -51,5 +51,23 @@ T norm(const Vector<T>& x)
     return std::sqrt(sum);
 }
 
+template<typename T>
+size_t nrows(const Matrix<T>& x)
+{
+    return x.size();
+}
+
+template<typename T>
+size_t ncols(const Matrix<T>& x)
+{
+    return x.size() == 0 ? 0 : x.front().size();
+}
+
+template<typename T>
+std::pair<size_t, size_t> ndims(const Matrix<T>& x)
+{
+    return std::make_pair(nrows(x), ncols(x));
+}
+
 } // namespace Maths
 } // namespace Algorithms
