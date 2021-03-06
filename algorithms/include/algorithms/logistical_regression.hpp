@@ -1,25 +1,25 @@
+#pragma once
+
 #include <vector>
 
-namespace Algorithms
-{
+namespace Algorithms {
 
 /**
  * Logistical regression classifier
- * 
+ *
  * @todo Description
  */
-class LogisticalRegression
-{
-public:
+class LogisticalRegression {
+  public:
     /**
      * Single dataset entry
-     * 
+     *
      * std::vector<double> Vector of feature values
      * bool                Target value (does feature belong to class or not)
      */
     using Pair = std::pair<std::vector<double>, bool>;
 
-protected:
+  protected:
     // Count of features in dataset
     size_t m_feature_count;
 
@@ -38,14 +38,14 @@ protected:
 
     /**
      * Finds minimal value of dataset-based cost function with BFGS algorithm
-     * 
+     *
      * @param i Index of dataset entry
      */
     std::vector<double> minimal(size_t i) const;
-    
+
     void train();
 
-public:
+  public:
     LogisticalRegression(const std::vector<Pair>& dataset);
     ~LogisticalRegression() = default;
 

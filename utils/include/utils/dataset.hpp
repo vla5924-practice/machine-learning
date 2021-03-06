@@ -1,25 +1,22 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 #include <rapidcsv.h>
 
-namespace Utils
-{
+namespace Utils {
 
-class Dataset
-{
+class Dataset {
     rapidcsv::Document doc;
 
-public:
+  public:
     Dataset(const std::string& filename, int label_row = -1, int label_column = -1);
     ~Dataset() = default;
 
-    template<typename T>
-    std::vector<std::vector<T>> asVectors()
-    {
+    template <typename T>
+    std::vector<std::vector<T>> asVectors() {
         std::vector<std::vector<T>> data;
         size_t rows = doc.GetRowCount();
         for (size_t i = 0; i < rows; i++)
@@ -27,15 +24,13 @@ public:
         return data;
     }
 
-    template<typename T, typename Tx>
-    std::vector<std::pair<std::vector<T>, Tx>> asPairsWithVector()
-    {
+    template <typename T, typename Tx>
+    std::vector<std::pair<std::vector<T>, Tx>> asPairsWithVector() {
         size_t rows = doc.GetRowCount();
         size_t cols = doc.GetColumnCount();
         std::vector<std::pair<std::vector<T>, Tx>> data(0);
         data.reserve(rows);
-        for (size_t i = 0; i < rows; i++)
-        {
+        for (size_t i = 0; i < rows; i++) {
             std::vector<T> part(cols - 1);
             for (size_t j = 0; j < cols - 1; j++)
                 part[j] = doc.GetCell<T>(j, i);
@@ -48,4 +43,4 @@ public:
     }
 };
 
-}
+} // namespace Utils
