@@ -1,3 +1,6 @@
 [submodule "thirdparty/rapidcsv"]
 	path = thirdparty/rapidcsv
 	url = https://github.com/d99kris/rapidcsv.git
+[submodule "thirdparty/googletest"]
+	path = thirdparty/googletest
+	url = https://github.com/google/googletest.git
