@@ -2,15 +2,13 @@
 
 #include <vector>
 
-namespace Algorithms
-{
-namespace Maths
-{
+namespace Algorithms {
+namespace Maths {
 
-template<typename T>
+template <typename T>
 using Vector = std::vector<T>;
 
-template<typename T>
+template <typename T>
 using Matrix = Vector<Vector<T>>;
 
 } // namespace Maths

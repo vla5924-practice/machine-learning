@@ -5,23 +5,19 @@
 #include "maths/functions.hpp"
 #include "maths/types.hpp"
 
-namespace Algorithms
-{
-namespace Maths
-{
+namespace Algorithms {
+namespace Maths {
 
-template<typename T>
-Vector<T> operator*(const T& x, const Vector<T>& y)
-{
+template <typename T>
+Vector<T> operator*(const T& x, const Vector<T>& y) {
     Vector<T> result = y;
     for (auto& elem : result)
         elem = x * elem;
     return result;
 }
 
-template<typename T>
-Matrix<T> operator*(const T& x, const Matrix<T>& y)
-{
+template <typename T>
+Matrix<T> operator*(const T& x, const Matrix<T>& y) {
     Matrix<T> result = y;
     for (auto& row : result)
         for (auto& elem : row)
@@ -29,9 +25,8 @@ Matrix<T> operator*(const T& x, const Matrix<T>& y)
     return result;
 }
 
-template<typename T>
-Vector<T> operator+(const Vector<T>& x, const Vector<T>& y)
-{
+template <typename T>
+Vector<T> operator+(const Vector<T>& x, const Vector<T>& y) {
     assert(x.size() == y.size());
     size_t size = x.size();
 
@@ -41,9 +36,8 @@ Vector<T> operator+(const Vector<T>& x, const Vector<T>& y)
     return result;
 }
 
-template<typename T>
-Vector<T> operator-(const Vector<T>& x, const Vector<T>& y)
-{
+template <typename T>
+Vector<T> operator-(const Vector<T>& x, const Vector<T>& y) {
     assert(x.size() == y.size());
     size_t size = x.size();
 
@@ -53,9 +47,8 @@ Vector<T> operator-(const Vector<T>& x, const Vector<T>& y)
     return result;
 }
 
-template<typename T>
-Matrix<T> operator*(const Vector<T>& x, const Vector<T>& y)
-{
+template <typename T>
+Matrix<T> operator*(const Vector<T>& x, const Vector<T>& y) {
     size_t rows = x.size();
     size_t cols = y.size();
 
@@ -66,9 +59,8 @@ Matrix<T> operator*(const Vector<T>& x, const Vector<T>& y)
     return result;
 }
 
-template<typename T>
-Vector<T> operator*(const Matrix<T>& x, const Vector<T>& y)
-{
+template <typename T>
+Vector<T> operator*(const Matrix<T>& x, const Vector<T>& y) {
     size_t rows, cols;
     std::tie(rows, cols) = ndims(x);
     assert(cols == y.size());
@@ -80,9 +72,8 @@ Vector<T> operator*(const Matrix<T>& x, const Vector<T>& y)
     return result;
 }
 
-template<typename T>
-Vector<T> operator*(const Vector<T>& x, const Matrix<T>& y)
-{
+template <typename T>
+Vector<T> operator*(const Vector<T>& x, const Matrix<T>& y) {
     size_t rows, cols;
     std::tie(rows, cols) = ndims(y);
 
@@ -93,9 +84,8 @@ Vector<T> operator*(const Vector<T>& x, const Matrix<T>& y)
     return result;
 }
 
-template<typename T>
-Matrix<T> operator-(const Matrix<T>& x)
-{
+template <typename T>
+Matrix<T> operator-(const Matrix<T>& x) {
     Matrix<T> result = x;
     for (auto& row : result)
         for (auto& elem : row)
@@ -103,9 +93,8 @@ Matrix<T> operator-(const Matrix<T>& x)
     return result;
 }
 
-template<typename T>
-Vector<T> operator-(const Vector<T>& x)
-{
+template <typename T>
+Vector<T> operator-(const Vector<T>& x) {
     Vector<T> result = x;
     for (auto& elem : result)
         elem = -elem;
