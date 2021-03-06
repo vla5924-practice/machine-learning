@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        std::cout << "Usage: ./logistical_regression_sample path_to_dataset.csv" << std::endl;
+        std::cout << "Usage: ./logistical_regression_sample path_to_dataset.csv [path_to_test_data.csv]" << std::endl;
         return 1;
     }
 
@@ -17,6 +17,21 @@ int main(int argc, char* argv[])
     auto data = dataset.asPairsWithVector<double, bool>();
 
     Algorithms::LogisticalRegression log_reg(data);
+
+    if (argc == 3)
+    {
+        std::string inputs_filename = argv[2];
+        Utils::Dataset inputs_data(inputs_filename);
+        auto inputs = inputs_data.asVectors<double>();
+        for (const auto& input : inputs)
+        {
+            for (double feature : input)
+                std::cout << feature << ',';
+            std::cout << log_reg.classify(input) << std::endl;
+        }
+        return 0;
+    }
+
     while (true)
     {
         std::cout << "Enter input features (" << log_reg.featureCount() << "): ";
