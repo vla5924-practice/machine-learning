@@ -32,7 +32,7 @@ class LogisticalRegression {
 
     static double sigmoid(double arg);
 
-    std::vector<double> gradient(const std::vector<double>& x) const;
+    std::vector<double> gradient(const std::vector<double>& x, size_t i) const;
 
     double cost(size_t i) const;
 
