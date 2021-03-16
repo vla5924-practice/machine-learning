@@ -38,7 +38,7 @@ T dot(const Vector<T>& x, const Vector<T>& y) {
 
 template <typename T>
 T norm(const Vector<T>& x) {
-    T sum = T{};
+    T sum{};
     for (const T& elem : x)
         sum += elem * elem;
     return std::sqrt(sum);
