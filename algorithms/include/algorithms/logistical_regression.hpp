@@ -32,9 +32,9 @@ class LogisticalRegression {
 
     static double sigmoid(double arg);
 
-    std::vector<double> gradient(const std::vector<double>& x, size_t i) const;
+    std::vector<double> gradient(const std::vector<double>& theta, size_t i) const;
 
-    double cost(size_t i) const;
+    double cost(const std::vector<double>& theta, size_t i) const;
 
     /**
      * Finds minimal value of dataset-based cost function with BFGS algorithm

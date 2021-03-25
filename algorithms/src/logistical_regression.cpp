@@ -15,45 +15,49 @@ double LogisticalRegression::sigmoid(double arg) {
     return 1. / (1. + std::exp(-arg));
 }
 
-double LogisticalRegression::cost(size_t i) const {
+double LogisticalRegression::cost(const std::vector<double>& theta, size_t i) const {
     double y = m_dataset[i].second ? -1 : 1;
     double sum = 0;
     for (const Pair& x : m_dataset) {
-        double arg = y * (m_theta_0 + dot(m_theta, x.first));
+        double arg = y * (m_theta_0 + dot(theta, x.first));
         sum += std::log(1. / sigmoid(arg));
     }
     // TODO: Here should be some extra calculations...
     return sum;
 }
 
-std::vector<double> LogisticalRegression::gradient(const std::vector<double>& x, size_t i) const {
-    assert(x.size() == m_feature_count);
+std::vector<double> LogisticalRegression::gradient(const std::vector<double>& theta, size_t i) const {
+    assert(theta.size() == m_feature_count);
     std::vector<double> grad(m_feature_count);
     // FIXME: Some issue with y, maybe normalize dataset feature values?
     double y = m_dataset[i].second ? 1 : -1;
-    double arg = y * (m_theta_0 + dot(m_theta, x));
+    double arg = y * (m_theta_0 + dot(theta, m_dataset[i].first));
     for (size_t i = 0; i < m_feature_count; i++)
-        grad[i] = -y * x[i] * std::exp(-arg) * sigmoid(arg);
+        grad[i] = -y * theta[i] * std::exp(-arg) * sigmoid(arg);
     return grad;
 }
 
 std::vector<double> LogisticalRegression::minimal(size_t i) const {
-    Matrix<double> h = createIdentity<double>(m_feature_count);
     const double epsilon = 1e-5;
-    const Vector<double> identity(m_feature_count, 1);
+    const Matrix<double> identity = createIdentity<double>(m_feature_count);
+    Matrix<double> h = createIdentity<double>(m_feature_count);
     Vector<double> x = m_dataset[i].first;
     Vector<double> grad = gradient(x, i);
     do {
         Vector<double> p = -h * grad;
-        double alpha = 0.03;
+        double alpha = 1;
         // TODO: Search alpha to satisfy to Wolfe condition
         Vector<double> x_next = x + alpha * p;
         Vector<double> x_delta = x_next - x;
         Vector<double> grad_next = gradient(x_next, i);
         Vector<double> grad_delta = grad_next - grad;
         double ro = 1 / dot(grad_delta, x_delta);
-        Matrix<double> temp = h - ro * (x_delta * (grad_delta * h));
-        Matrix<double> h_next = (temp - ro * (temp * grad_delta) * x_delta) + (ro * x_delta * x_delta);
+        // Matrix<double> temp = h - ro * (x_delta * (grad_delta * h));
+        // Matrix<double> h_next = (temp - ro * (temp * grad_delta) * x_delta) +
+        // (ro * x_delta * x_delta);
+        Matrix<double> h_next = (identity - ro * x_delta * grad_delta) * h * (identity - ro * grad_delta * x_delta) +
+                                ro * x_delta * x_delta;
+
         x = x_next;
         grad = grad_next;
         h = h_next;
