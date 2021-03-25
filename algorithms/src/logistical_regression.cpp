@@ -15,48 +15,48 @@ double LogisticalRegression::sigmoid(double arg) {
     return 1. / (1. + std::exp(-arg));
 }
 
-double LogisticalRegression::cost(const std::vector<double>& theta, size_t i) const {
-    double y = m_dataset[i].second ? -1 : 1;
+double LogisticalRegression::cost(const std::vector<double>& theta) const {
     double sum = 0;
-    for (const Pair& x : m_dataset) {
-        double arg = y * (m_theta_0 + dot(theta, x.first));
+    for (const Pair& data : m_dataset) {
+        double y = data.second ? 1 : -1;
+        double arg = y * (m_theta_0 + dot(theta, data.first));
         sum += std::log(1. / sigmoid(arg));
     }
     // TODO: Here should be some extra calculations...
     return sum;
 }
 
-std::vector<double> LogisticalRegression::gradient(const std::vector<double>& theta, size_t i) const {
+std::vector<double> LogisticalRegression::gradient(const std::vector<double>& theta) const {
     assert(theta.size() == m_feature_count);
     std::vector<double> grad(m_feature_count);
-    // FIXME: Some issue with y, maybe normalize dataset feature values?
-    double y = m_dataset[i].second ? 1 : -1;
-    double arg = y * (m_theta_0 + dot(theta, m_dataset[i].first));
-    for (size_t i = 0; i < m_feature_count; i++)
-        grad[i] = -y * theta[i] * std::exp(-arg) * sigmoid(arg);
+    for (const Pair& data : m_dataset) {
+        double y = data.second ? 1 : -1;
+        double arg = y * (m_theta_0 + dot(theta, data.first));
+        for (size_t i = 0; i < m_feature_count; i++)
+            grad[i] += -y * data.first[i] * sigmoid(-arg);
+    }
     return grad;
 }
 
-std::vector<double> LogisticalRegression::minimal(size_t i) const {
+std::vector<double> LogisticalRegression::minimal(const std::vector<double>& x_start) const {
     const double epsilon = 1e-5;
     const Matrix<double> identity = createIdentity<double>(m_feature_count);
     Matrix<double> h = createIdentity<double>(m_feature_count);
-    Vector<double> x = m_dataset[i].first;
-    Vector<double> grad = gradient(x, i);
+    Vector<double> x = x_start;
+    Vector<double> grad = gradient(x);
     do {
         Vector<double> p = -h * grad;
         double alpha = 1;
         // TODO: Search alpha to satisfy to Wolfe condition
         Vector<double> x_next = x + alpha * p;
         Vector<double> x_delta = x_next - x;
-        Vector<double> grad_next = gradient(x_next, i);
+        Vector<double> grad_next = gradient(x_next);
         Vector<double> grad_delta = grad_next - grad;
         double ro = 1 / dot(grad_delta, x_delta);
-        // Matrix<double> temp = h - ro * (x_delta * (grad_delta * h));
-        // Matrix<double> h_next = (temp - ro * (temp * grad_delta) * x_delta) +
-        // (ro * x_delta * x_delta);
-        Matrix<double> h_next = (identity - ro * x_delta * grad_delta) * h * (identity - ro * grad_delta * x_delta) +
-                                ro * x_delta * x_delta;
+        Matrix<double> temp = h - ro * (x_delta * (grad_delta * h));
+        Matrix<double> h_next = (temp - ro * (temp * grad_delta) * x_delta) + (ro * x_delta * x_delta);
+        // Matrix<double> h_next = (identity - ro * x_delta * grad_delta) * h * (identity - ro * grad_delta * x_delta) +
+        //                        ro * x_delta * x_delta;
 
         x = x_next;
         grad = grad_next;
@@ -73,11 +73,7 @@ void LogisticalRegression::train() {
         m_theta = m_theta + m_dataset[i].first;
     for (size_t i = 0; i < m_feature_count; i++)
         m_theta[i] /= size;
-    std::vector<double> thetas(m_feature_count, 0);
-    for (size_t i = 0; i < size; i++)
-        thetas = thetas + minimal(i);
-    for (size_t i = 0; i < m_feature_count; i++)
-        m_theta[i] = thetas[i] / size;
+    m_theta = minimal(m_theta);
 }
 
 LogisticalRegression::LogisticalRegression(const std::vector<Pair>& dataset) {
