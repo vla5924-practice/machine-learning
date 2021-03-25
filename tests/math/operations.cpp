@@ -26,8 +26,7 @@ TEST(Algorithms_Math_Operations__Test, can_add_vectors_with_equal_sizes) {
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     cannot_add_vectors_with_different_sizes) {
+TEST(Algorithms_Math_Operations__Test, cannot_add_vectors_with_different_sizes) {
     Vector<int> vec1 = {1, 3, 5};
     Vector<int> vec2 = {2, 4};
     ASSERT_DEATH(vec1 + vec2, ".*");
@@ -41,8 +40,7 @@ TEST(Algorithms_Math_Operations__Test, can_sub_vector_from_vector) {
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     cannot_sub_vectors_with_different_sizes) {
+TEST(Algorithms_Math_Operations__Test, cannot_sub_vectors_with_different_sizes) {
     Vector<int> vec1 = {1, 3, 5};
     Vector<int> vec2 = {2, 4};
     ASSERT_DEATH(vec1 - vec2, ".*");
@@ -56,8 +54,7 @@ TEST(Algorithms_Math_Operations__Test, can_multiply_vector_by_vector) {
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     can_multiply_vector_by_vector_with_different_sizes) {
+TEST(Algorithms_Math_Operations__Test, can_multiply_vector_by_vector_with_different_sizes) {
     Vector<int> vec1 = {1, 3, 5};
     Vector<int> vec2 = {2, 4};
     Matrix<int> act = vec1 * vec2;
@@ -65,8 +62,7 @@ TEST(Algorithms_Math_Operations__Test,
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     can_multiply_matrix_and_vector_with_valid_sizes) {
+TEST(Algorithms_Math_Operations__Test, can_multiply_matrix_and_vector_with_valid_sizes) {
     Matrix<int> mat = {{1, 3, 5}, {2, 4, 6}};
     Vector<int> vec = {-1, 0, 1};
     Vector<int> act = mat * vec;
@@ -74,8 +70,7 @@ TEST(Algorithms_Math_Operations__Test,
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     can_multiply_matrix_and_vector_with_equal_sizes) {
+TEST(Algorithms_Math_Operations__Test, can_multiply_matrix_and_vector_with_equal_sizes) {
     Matrix<int> mat = {{1, 3, 5}, {2, 4, 6}, {-1, 0, 1}};
     Vector<int> vec = {13, 17, 15};
     Vector<int> act = mat * vec;
@@ -83,15 +78,13 @@ TEST(Algorithms_Math_Operations__Test,
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     cannot_multiply_matrix_and_vector_with_invalid_sizes) {
+TEST(Algorithms_Math_Operations__Test, cannot_multiply_matrix_and_vector_with_invalid_sizes) {
     Matrix<int> mat = {{1, 3, 5}, {2, 4, 6}};
     Vector<int> vec = {-1, 1};
     ASSERT_DEATH(mat * vec, ".*");
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     can_multiply_vector_and_matrix_with_valid_sizes) {
+TEST(Algorithms_Math_Operations__Test, can_multiply_vector_and_matrix_with_valid_sizes) {
     Matrix<int> mat = {{1, 2}, {3, 4}, {5, 6}};
     Vector<int> vec = {-1, 0, 1};
     Vector<int> act = vec * mat;
@@ -99,8 +92,7 @@ TEST(Algorithms_Math_Operations__Test,
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     can_multiply_vector_and_matrix_with_equal_sizes) {
+TEST(Algorithms_Math_Operations__Test, can_multiply_vector_and_matrix_with_equal_sizes) {
     Matrix<int> mat = {{1, 2, -1}, {3, 4, 0}, {5, 6, 1}};
     Vector<int> vec = {13, 17, 15};
     Vector<int> act = vec * mat;
@@ -108,8 +100,7 @@ TEST(Algorithms_Math_Operations__Test,
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     cannot_multiply_vector_and_matrix_with_invalid_sizes) {
+TEST(Algorithms_Math_Operations__Test, cannot_multiply_vector_and_matrix_with_invalid_sizes) {
     Matrix<int> mat = {{1, 2}, {3, 4}, {5, 6}};
     Vector<int> vec = {-1, 1};
     ASSERT_DEATH(vec * mat, ".*");
@@ -129,8 +120,7 @@ TEST(Algorithms_Math_Operations__Test, can_invert_vector) {
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     can_multiply_square_matrices_with_equal_sizes) {
+TEST(Algorithms_Math_Operations__Test, can_multiply_square_matrices_with_equal_sizes) {
     Matrix<int> mat1 = {{1, 2, -1}, {3, 4, 0}, {5, 6, 1}};
     Matrix<int> mat2 = {{7, 8, 9}, {-5, 5, 15}, {0, 1, 2}};
     Matrix<int> act = mat1 * mat2;
@@ -138,15 +128,13 @@ TEST(Algorithms_Math_Operations__Test,
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     cannot_multiply_square_matrices_with_different_sizes) {
+TEST(Algorithms_Math_Operations__Test, cannot_multiply_square_matrices_with_different_sizes) {
     Matrix<int> mat1 = {{1, 2, -1}, {3, 4, 0}, {5, 6, 1}};
     Matrix<int> mat2 = {{7, 8}, {-5, 5}};
     ASSERT_DEATH(mat1 * mat2, ".*");
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     can_multiply_matrices_with_valid_different_sizes) {
+TEST(Algorithms_Math_Operations__Test, can_multiply_matrices_with_valid_different_sizes) {
     Matrix<int> mat1 = {{1, 2, -1}, {3, 4, 0}};
     Matrix<int> mat2 = {{1, 2}, {3, 4}, {5, 6}};
     Matrix<int> act = mat1 * mat2;
@@ -154,8 +142,7 @@ TEST(Algorithms_Math_Operations__Test,
     ASSERT_EQ(act, exp);
 }
 
-TEST(Algorithms_Math_Operations__Test,
-     cannot_multiply_matrices_with_invalid_different_sizes) {
+TEST(Algorithms_Math_Operations__Test, cannot_multiply_matrices_with_invalid_different_sizes) {
     Matrix<int> mat1 = {{1, 2, -1}, {3, 4, 0}};
     Matrix<int> mat2 = {{1, 2, -1}, {3, 4, 0}};
     ASSERT_DEATH(mat1 * mat2, ".*");
