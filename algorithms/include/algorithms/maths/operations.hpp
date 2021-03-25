@@ -101,5 +101,19 @@ Vector<T> operator-(const Vector<T>& x) {
     return result;
 }
 
+template <typename T>
+Matrix<T> operator*(const Matrix<T>& x, const Matrix<T>& y) {
+    size_t x_cols = ncols(x);
+    assert(x_cols == nrows(y));
+    size_t rows = nrows(x);
+    size_t cols = ncols(y);
+    Matrix<T> result = createMatrix<T>(rows, cols);
+    for (size_t i = 0; i < rows; i++)
+        for (size_t j = 0; j < cols; j++)
+            for (size_t k = 0; k < x_cols; k++)
+                result[i][j] += x[i][k] * y[k][j];
+    return result;
+}
+
 } // namespace Maths
 } // namespace Algorithms
