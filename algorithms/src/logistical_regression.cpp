@@ -15,11 +15,15 @@ double LogisticalRegression::sigmoid(double arg) {
     return 1. / (1. + std::exp(-arg));
 }
 
+double LogisticalRegression::convertTarget(bool target) {
+    return target ? 1 : -1;
+}
+
 double LogisticalRegression::cost(const std::vector<double>& theta) const {
     double sum = 0;
     for (const Pair& data : m_dataset) {
-        double y = data.second ? 1 : -1;
-        double arg = y * (m_theta_0 + dot(theta, data.first));
+        double y = convertTarget(data.second);
+        double arg = y * (m_theta.second + dot(theta, data.first));
         sum += std::log(1. / sigmoid(arg));
     }
     // TODO: Here should be some extra calculations...
@@ -30,8 +34,8 @@ std::vector<double> LogisticalRegression::gradient(const std::vector<double>& th
     assert(theta.size() == m_feature_count);
     std::vector<double> grad(m_feature_count);
     for (const Pair& data : m_dataset) {
-        double y = data.second ? 1 : -1;
-        double arg = y * (m_theta_0 + dot(theta, data.first));
+        double y = convertTarget(data.second);
+        double arg = y * (m_theta.second + dot(theta, data.first));
         for (size_t i = 0; i < m_feature_count; i++)
             grad[i] += -y * data.first[i] * sigmoid(-arg);
     }
@@ -39,9 +43,8 @@ std::vector<double> LogisticalRegression::gradient(const std::vector<double>& th
 }
 
 std::vector<double> LogisticalRegression::minimal(const std::vector<double>& x_start) const {
-    const double epsilon = 1e-5;
     const Matrix<double> identity = createIdentity<double>(m_feature_count);
-    Matrix<double> h = createIdentity<double>(m_feature_count);
+    Matrix<double> h = identity;
     Vector<double> x = x_start;
     Vector<double> grad = gradient(x);
     do {
@@ -55,28 +58,26 @@ std::vector<double> LogisticalRegression::minimal(const std::vector<double>& x_s
         double ro = 1 / dot(grad_delta, x_delta);
         Matrix<double> temp = h - ro * (x_delta * (grad_delta * h));
         Matrix<double> h_next = (temp - ro * (temp * grad_delta) * x_delta) + (ro * x_delta * x_delta);
-        // Matrix<double> h_next = (identity - ro * x_delta * grad_delta) * h * (identity - ro * grad_delta * x_delta) +
-        //                        ro * x_delta * x_delta;
 
         x = x_next;
         grad = grad_next;
         h = h_next;
-    } while (norm(grad) > epsilon);
+    } while (norm(grad) > m_params.epsilon);
     return x;
 }
 
 void LogisticalRegression::train() {
-    m_theta_0 = 0;
-    m_theta.resize(m_feature_count, 0);
+    m_theta.second = 0;
+    m_theta.first.resize(m_feature_count, 0);
     size_t size = m_dataset.size();
     for (size_t i = 0; i < size; i++)
-        m_theta = m_theta + m_dataset[i].first;
+        m_theta.first = m_theta.first + m_dataset[i].first;
     for (size_t i = 0; i < m_feature_count; i++)
-        m_theta[i] /= size;
-    m_theta = minimal(m_theta);
+        m_theta.first[i] /= size;
+    m_theta.first = minimal(m_theta.first);
 }
 
-LogisticalRegression::LogisticalRegression(const std::vector<Pair>& dataset) {
+LogisticalRegression::LogisticalRegression(const std::vector<Pair>& dataset, const Params& params) : m_params(params) {
     if (dataset.empty())
         throw std::runtime_error("Empty dataset is not allowed");
 
@@ -86,7 +87,7 @@ LogisticalRegression::LogisticalRegression(const std::vector<Pair>& dataset) {
             throw std::runtime_error("Dataset entries have different sizes");
 
     m_dataset = dataset;
-    m_theta_0 = 0;
+    m_theta.second = 0;
     train();
 }
 
@@ -95,13 +96,13 @@ size_t LogisticalRegression::featureCount() const {
 }
 
 std::pair<std::vector<double>, double> LogisticalRegression::dividingHyperplane() const {
-    return std::make_pair(m_theta, m_theta_0);
+    return m_theta;
 }
 
 double LogisticalRegression::classify(const std::vector<double>& inputs) {
     if (inputs.size() != m_feature_count)
         throw std::runtime_error("Input does not have the same size as dataset");
 
-    double arg = m_theta_0 + dot(m_theta, inputs);
+    double arg = m_theta.second + dot(m_theta.first, inputs);
     return sigmoid(arg);
 }
