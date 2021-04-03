@@ -19,9 +19,11 @@ class LogisticalRegression {
      */
     using Pair = std::pair<std::vector<double>, bool>;
 
+    using VectorExtended = std::pair<std::vector<double>, double>;
+
     struct Params {
         double epsilon = 1e-5;
-        double c = 1.0;
+        double c = 5.0;
         double ro = 0;
         size_t iter_max = 10000u;
     };
@@ -34,16 +36,16 @@ class LogisticalRegression {
     std::vector<Pair> m_dataset;
 
     // Coefficients calculated with dataset given for pre-training
-    std::pair<std::vector<double>, double> m_theta;
+    VectorExtended m_theta;
 
     Params m_params;
 
     static double sigmoid(double arg);
     static double convertTarget(bool target);
 
-    double cost(const std::vector<double>& theta) const;
-    std::vector<double> gradient(const std::vector<double>& theta) const;
-    std::vector<double> minimal(const std::vector<double>& x_start) const;
+    double cost(const VectorExtended& theta) const;
+    std::vector<double> gradient() const;
+    std::vector<double> minimal(const std::vector<double>& x_start);
 
     void train();
 
@@ -53,7 +55,7 @@ class LogisticalRegression {
 
     size_t featureCount() const;
 
-    std::pair<std::vector<double>, double> dividingHyperplane() const;
+    VectorExtended dividingHyperplane() const;
 
     double classify(const std::vector<double>& inputs);
 };
